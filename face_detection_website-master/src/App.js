@@ -8,11 +8,9 @@ import './App.css';
 import FaceRecognition from './Components/FaceRecognition/FaceRecognition.js'
 import Signin from './Components/Signin/Signin.js'
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
 
-const app = new Clarifai.App({
-  apiKey: 'f6ac7de059104c21b4a5534b935ad951'
-})
+
+
 
 const paramOptions = 
 {
@@ -84,10 +82,14 @@ class App extends React.Component {
   onButtonSubmit = () => {
     this.setState({imageUrl: this.state.input })
     console.log("click");
-    app.models.predict(
-      Clarifai.FACE_DETECT_MODEL,
-      this.state.input     //if we had written = this.state.imageUrl because that is of the way setState works 
-      )
+    fetch('http://localhost:3000/imageUrl',{
+      method:'post',
+      headers:{'Content-Type':'application/JSON'},
+      body: JSON.stringify({
+        input: this.state.input
+      })
+    })
+    .then(response => response.json())
       .then( (response) => {
         if(response) {
           fetch('http://localhost:3000/image',{
@@ -118,6 +120,7 @@ class App extends React.Component {
       this.setState({isSigniedIn:true})  
     }
     this.setState({route:route})
+    // this.setState({imageUrl: '' })
   }
 
 
